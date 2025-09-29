@@ -5,6 +5,29 @@ const puppeteer = require('puppeteer');
 const bodyParser = require('body-parser');
 const base64 = require('base64-js');
 
+const fs = require("fs");
+const path = require("path");
+
+function logFileStructure(dir, prefix = "") {
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  const lastIndex = entries.length - 1;
+
+  entries.forEach((entry, index) => {
+    const isLast = index === lastIndex;
+    const connector = isLast ? "└─" : "├─";
+    console.log(prefix + connector + " " + entry.name);
+
+    if (entry.isDirectory()) {
+      const newPrefix = prefix + (isLast ? "   " : "│  ");
+      logFileStructure(path.join(dir, entry.name), newPrefix);
+    }
+  });
+}
+
+// Example: run from project root
+logFileStructure(process.cwd());
+
+
 // Set EJS as the template engine
 app.set('view engine', 'ejs');
 // Set the directory for views
